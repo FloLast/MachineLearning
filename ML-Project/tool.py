@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Dec 01 18:22:56 2017
 
-@author: Hugo
-"""
+
 import pandas as pd 
 import matplotlib.pyplot as plt
 from numpy import *
@@ -94,18 +91,29 @@ def prepro(importation):
     #filling the Event columns with data if its NaN : different from itself
     importation.loc[importation.Event != importation.Event,'Event']=0
     
-    #Setting our target 
-    target=importation.pickups
-    target=array(target)
-    
     #deleting unnecessary columns
    
     del importation['pickup_dt']
     del importation['borough']
-    del importation['pickups']
     
-    return importation,target
+    return importation
 
+###############################################################################
+#polynomial cleaning 
+def polyclean(X):
+    for k in X.columns:
+        if sum(X[k])==0:
+            del X[k]
+        else :
+            redundant = False
+            l=k+1
+            while redundant==False :
+                if l>max(X.columns):
+                    redundant = True
+                elif sum(X[k])==sum(X[l]):
+                    redundant = True
+                    del X[k]
+                l=l+1
 
 ###############################################################################
 #Crossvalidation 
